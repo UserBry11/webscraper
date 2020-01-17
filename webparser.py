@@ -1,14 +1,33 @@
 import sys
 import re
+import argparse
 import requests
 from bs4 import BeautifulSoup
 
 author = "__Bryan__"
 
-def main():
-    # print(sys.argv[1])
 
-    response = requests.get(sys.argv[1]).text
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--text', help='url for input. NEEDS TO BE HTTP://YOUR_URL')
+
+    return parser
+
+
+def main():
+
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if not args:
+        parser.print_usage()
+        sys.exit(1)
+
+    if not args.text.startswith('http'):
+        print("Url not correct format\nhttp://{}.com\n".format(args.text))
+        sys.exit(1)
+
+    response = requests.get(args.text).text
 
     soup = BeautifulSoup(response, 'lxml')
 
